@@ -62,6 +62,8 @@ elsif $mode == 'done'
   # copy back the normal hosts
   FileUtils.cp($hosts_cp, $hosts)
   puts 'PLAY TIME!!!'
+else
+  puts 'Need an argument!'
 end
 
 
