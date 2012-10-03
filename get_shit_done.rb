@@ -1,29 +1,30 @@
-#!/usr/bin/ruby
-
 # script to modify the hosts file
 # leo sun
-# feb 19, 2012
 # get shit done!!!
 
 require 'rubygems'
 require 'fileutils'
-require 'elif'
 
 $block_list = %w(
-  youtube.com 
-  tieba.baidu.com
-  yinyuetai.com
-  news.ycombinator.com
-  tudou.com
-  youku.com
-  reddit.com
-  deviantart.com
-  mongout.com
+  www.youtube.com
+  www.weibo.com
   weibo.com
-  secret-china.com
-  douban.com
-  verycd.com
-  fakkut.net
+  www.tieba.baidu.com
+  www.yinyuetai.com
+  news.ycombinator.com
+  www.tudou.com
+  www.youku.com
+  www.reddit.com
+  www.deviantart.com
+  www.mongout.com
+  www.secret-china.com
+  bbs.secret-china.com
+  www.douban.com
+  www.verycd.com
+  www.fakkut.net
+  www.head-fi.org
+  www.facebook.com
+  ruby-china.org
 )
 
 $hosts = '/etc/hosts'
@@ -35,31 +36,28 @@ if $mode == 'work'
 
   # read the last line to determine
   # if already in working mode
-  last_line = Elif.open($hosts) { |f| f.gets }
+  contents = ""
+  File.open("#{$hosts}", "rb") do |f|
+    contents = f.read
+  end
 
-  if last_line != "# work hosts\n"
-    # currently not in working mode
+  unless contents.include?("work hosts")
     File.open($hosts, "a+") do |f|
-        FileUtils.cp($hosts, $hosts_cp)
+      f.puts '# work hosts'
+      FileUtils.cp($hosts, $hosts_cp)
+      f.puts
 
-        # blank line
-        f.puts
-
-        # added in all the blocking sites
-        $block_list.each do |i|
-          f.puts '127.0.0.1 ' + i
-        end
-        f.puts '# work hosts'
+      $block_list.each do |i|
+        f.puts '127.0.0.1 ' + i
+      end
 
     end
     puts 'WORK WORK WORK'
   else
-    # already in work mode
     puts 'Already using the work hosts'
   end
 
 elsif $mode == 'done'
-  # copy back the normal hosts
   FileUtils.cp($hosts_cp, $hosts)
   puts 'PLAY TIME!!!'
 else
